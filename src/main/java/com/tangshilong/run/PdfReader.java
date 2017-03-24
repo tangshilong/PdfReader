@@ -1,25 +1,23 @@
 package com.tangshilong.run;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.util.PDFTextStripper;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.util.PDFTextStripper;
 /**
  * pdf转成text
  * @author tangshilong
  *
  */
 public class PdfReader {
-	public void readPdf(String path) throws Exception {
-		// 是否排序
-		boolean sort = false;
+	@SuppressWarnings("ConstantConditions")
+	private void readPdf(String path) throws Exception {
 		// pdf文件名
-		String pdfFile = path;
 		// 输入文本文件名称
 		String textFile = null;
 		// 编码方式
@@ -49,17 +47,15 @@ public class PdfReader {
 				// 如果作为URL装载得到异常则从文件系统装载
 				// 注意参数已不是以前版本中的URL.而是File。
 				document = PDDocument.load(path);
-				if (pdfFile.length() > 4) {
-					textFile = pdfFile.substring(0, pdfFile.length() - 4) + ".txt";
-				}
+				if (path.length() > 4) textFile = path.substring(0, path.length() - 4) + ".txt";
 			}
 			// 文件输入流，写入文件倒textFile
 			output = new OutputStreamWriter(new FileOutputStream(textFile), encoding);
 			// PDFTextStripper来提取文本
-			PDFTextStripper stripper = null;
+			PDFTextStripper stripper;
 			stripper = new PDFTextStripper();
 			// 设置是否排序
-			stripper.setSortByPosition(sort);
+			stripper.setSortByPosition(false);
 			// 设置起始页
 			stripper.setStartPage(startPage);
 			// 设置结束页
@@ -81,11 +77,12 @@ public class PdfReader {
 	/**
 	 * @param args
 	 */
+	@SuppressWarnings("JavaDoc")
 	public static void main(String[] args) {
 		File f = new File("E:\\pdf");
 		File[] t = f.listFiles();
 		System.out.println("获取文件列表成功，开始解析pdf");
-		for (File file : t) {
+		for (File file : t != null ? t : new File[0]) {
 			PdfReader pdfReader = new PdfReader();
 			try {
 				// 取得E盘下的SpringGuide.pdf的内容
